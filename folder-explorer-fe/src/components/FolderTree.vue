@@ -22,6 +22,7 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue'
+import { getFolderById } from '../api/folderService'
 
 interface Folder {
   id: string
@@ -41,12 +42,18 @@ const emit = defineEmits<{
 
 const openFolders = props.openFolders || ref(new Set<string>())
 
-function toggleFolder(folder: Folder) {
+async function toggleFolder(folder: Folder) {
   if (openFolders.has(folder.id)) {
     openFolders.delete(folder.id)
   } else {
     openFolders.add(folder.id)
+
+    if (!folder.subfolders || folder.subfolders.length === 0) {
+      const result = await getFolderById(folder.id)
+      folder.subfolders = result.subfolders || []
+    }
   }
+
 
   emit('folder-click', folder)
 }
