@@ -13,26 +13,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model folder {
-  id        String  @id @default(uuid())
-  name      String  @unique
+model item {
+  id   String   @id @default(uuid())
+  name String
+  type ItemType
 
-  parentId  String?   @map("parent_id")
-  parent    folder?   @relation("FolderToSubfolders", fields: [parentId], references: [id])
-  subfolders folder[] @relation("FolderToSubfolders")
-  files     file[]
-  
+  parentId String? @map("parent_id")
+  parent   item?   @relation("ItemToChildren", fields: [parentId], references: [id])
+  children item[]  @relation("ItemToChildren")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model file {
-  id        String  @id @default(uuid())
-  name      String  @unique
-  
-  folderId  String  @map("parent_id")
-  folder    folder  @relation(fields: [folderId], references: [id])
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum ItemType {
+  folder
+  file
 }

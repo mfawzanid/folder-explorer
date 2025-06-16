@@ -1,20 +1,22 @@
 <template>
-  <ul class="folder-list">
-    <li v-for="folder in folders" :key="folder.id">
+  <ul class="item-list">
+    <li v-for="item in items.filter(i => i.type === 'folder')" :key="item.id">
       <div
-        class="folder-item"
-        @click.stop="toggleFolder(folder)"
-        :class="{ selected: folder.id === selectedId }"
+        class="item"
+        @click.stop="toggleItem(item)"
+        :class="{ selected: item.id === selectedId }"
       >
-        📁 {{ folder.name }}
+        <span v-if="item.type === 'folder'">📁</span>
+        <span v-else>📄</span>
+        {{ item.name }}
       </div>
 
       <FolderTree
-        v-if="isOpen(folder.id)"
-        :folders="folder.subfolders"
-        :open-folders="openFolders"
+        v-if="item.type === 'folder' && isOpen(item.id)"
+        :items="item.children ?? []"
+        :open-items="openItems"
         :selected-id="selectedId"
-        @folder-click="$emit('folder-click', $event)"
+        @item-click="$emit('item-click', $event)"
       />
     </li>
   </ul>
@@ -22,46 +24,44 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue'
-import { getFolderById } from '../api/folderService'
-
-interface Folder {
-  id: string
-  name: string
-  subfolders?: Folder[]
-}
+import type { Item } from '../types/item'
+import { getItemById } from '../api/itemService'
 
 const props = defineProps<{
-  folders: Folder[]
-  openFolders?: Set<string>
+  items: Item[]
+  openItems?: Set<string>
   selectedId?: string
 }>()
 
 const emit = defineEmits<{
-  (e: 'folder-click', folder: Folder): void
+  (e: 'item-click', item: Item): void
 }>()
 
-const openFolders = props.openFolders || ref(new Set<string>())
+const openItems = props.openItems || new Set<string>()
 
-async function toggleFolder(folder: Folder) {
-  if (openFolders.has(folder.id)) {
-    openFolders.delete(folder.id)
+async function toggleItem(item: Item) {
+  if (item.type === 'file') {
+    emit('item-click', item)
+    return
+  }
+
+  if (openItems.has(item.id)) {
+    openItems.delete(item.id)
   } else {
-    openFolders.add(folder.id)
+    openItems.add(item.id)
 
-    if (!folder.subfolders || folder.subfolders.length === 0) {
-      const result = await getFolderById(folder.id)
-      folder.subfolders = result.subfolders || []
+    if (!item.children || item.children.length === 0) {
+      const result = await getItemById(item.id)
+      item.children = result.children || []
     }
   }
 
-
-  emit('folder-click', folder)
+  emit('item-click', item)
 }
 
 function isOpen(id: string) {
-  return openFolders.has(id)
+  return openItems.has(id)
 }
-
 </script>
 
 <style scoped>
@@ -80,5 +80,11 @@ function isOpen(id: string) {
   font-weight: bold;
   color: white;
   background: #4EABED;
+}
+
+ul {
+  list-style: none;
+  padding-left: 16px;
+  margin: 0;
 }
 </style>

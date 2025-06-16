@@ -2,16 +2,16 @@
   <div class="app">
     <div class="left-panel">
       <FolderTree
-        :folders="folders"
-        :open-folders="openFolders"
-        :selected-id="selectedFolder?.id"
-        @folder-click="onFolderClick"
+        :items="rootItems"
+        :open-items="openItems"
+        :selected-id="selectedItem?.id"
+        @item-click="onItemClick"
       />
     </div>
     <div class="right-panel">
       <ul>
-        <li v-for="sub in selectedFolder?.subfolders || []" :key="sub.id">
-          📁 {{ sub.name }}
+        <li v-for="child in selectedItem?.children ?? []" :key="child.id">
+          {{ child.type === 'folder' ? '📁' : '📄' }} {{ child.name }}
         </li>
       </ul>
     </div>
@@ -20,22 +20,21 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import axios from 'axios'
 import FolderTree from './components/FolderTree.vue'
-import { getRootFolders, getFolderById } from './api/folderService'
+import type { Item } from './types/item'
+import { getRootFolders } from './api/itemService'
 
-const folders = ref([])
-
-const selectedFolder = ref(null)
-const openFolders = ref(new Set<string>())
+const rootItems = ref<Item[]>([])
+const selectedItem = ref<Item | null>(null)
+const openItems = ref(new Set<string>())
 
 onMounted(async () => {
   const result = await getRootFolders()
-  folders.value = result
+  rootItems.value = result ?? []
 })
 
-async function onFolderClick(folder) {
-  selectedFolder.value = await getFolderById(folder.id)
+async function onItemClick(item: Item) {
+  selectedItem.value = item
 }
 </script>
 
