@@ -1,8 +1,10 @@
 import { PrismaClient } from "./generated/prisma";
 import express, { Request, Response } from "express";
+import cors from "cors";
 
 const prisma = new PrismaClient()
 const app = express()
+app.use(cors());  
 const port = 3000
 
 
@@ -34,11 +36,7 @@ app.get('/folders', async (req: Request, res: Response) => {
     const rootFolders = await prisma.folder.findMany({
     where: {
       parentId: null,
-    },
-    include: {
-      subfolders: true,
-      files: true,
-    },
+    }
   });
 
   res.json(rootFolders);

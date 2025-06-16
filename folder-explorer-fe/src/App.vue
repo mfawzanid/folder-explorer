@@ -19,39 +19,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import axios from 'axios'
 import FolderTree from './components/FolderTree.vue'
+import { getRootFolders, getFolderById } from './api/folderService'
 
-// dummy data 
-const folders = ref([
-  {
-    id: 'a',
-    name: 'Folder A',
-    subfolders: [
-      { id: 'a1', name: 'Folder A1', subfolders: [] },
-      {
-        id: 'a2',
-        name: 'Folder A2',
-        subfolders: [
-          { id: 'a2a', name: 'Folder A2a', subfolders: [] }
-        ]
-      }
-    ]
-  },
-  {
-    id: 'b',
-    name: 'Folder B',
-    subfolders: [
-      { id: 'b1', name: 'Folder B1', subfolders: [] }
-    ]
-  }
-])
+const folders = ref([])
 
 const selectedFolder = ref(null)
 const openFolders = ref(new Set<string>())
 
-function onFolderClick(folder) {
-  selectedFolder.value = folder
+onMounted(async () => {
+  const result = await getRootFolders()
+  folders.value = result
+})
+
+async function onFolderClick(folder) {
+  selectedFolder.value = await getFolderById(folder.id)
 }
 </script>
 
