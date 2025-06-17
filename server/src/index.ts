@@ -10,7 +10,15 @@ app.use(cors());
 app.use(express.json())
 
 app.use("/items", itemRoute);
-app.use("/", asyncHandler(async (req, res) => res.send("Status is ok")));
+
+app.get("/", (req, res) => {
+  res.send("Status is ok");
+});
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`)
