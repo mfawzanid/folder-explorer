@@ -1,0 +1,94 @@
+{
+	"info": {
+		"_postman_id": "9ab10627-c819-4dd6-83a7-af41d814f1e2",
+		"name": "folder-explorer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40561535"
+	},
+	"item": [
+		{
+			"name": "CreateItem",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"file_1.1\",\n    \"type\": \"file\",\n    \"parentId\": \"518ef605-d289-4b63-aed3-c7d177b71881\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/items",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetItems",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/items?type=folder",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"items"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "folder"
+						},
+						{
+							"key": "parentId",
+							"value": "xxx",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetItemsById",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/items/518ef605-d289-4b63-aed3-c7d177b71881",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"items",
+						"518ef605-d289-4b63-aed3-c7d177b71881"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -28,6 +28,7 @@ POST   /items       : Create an item
 GET    /items       : Get items (query: type=folder|file)
 GET    /items/:id   : Get an item by ID (with children)
 ```
+Note:  You can test these endpoints using the Postman collection attached in this repository.
 
 ### Run the server
 

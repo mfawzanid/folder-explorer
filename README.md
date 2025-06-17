@@ -32,6 +32,25 @@ If you want to delete all data in database you can:
 docker compose down --volumes
 ```
 
+### Creating Items
+To create a new folder or file item, you can:
+- Use the Postman collection attached in the repository  
+- Or send a `curl` request like this:
+
+```bash
+curl --location 'localhost:3000/items' \
+--header 'Content-Type: application/json' \
+--data '{
+    "name": "file_1.1",
+    "type": "file", // or "folder"
+    "parentId": "518ef605-d289-4b63-aed3-c7d177b71881"
+}'
+```
+
+Notes:
+- To create a root folder, simply omit the `parentId` or set it to `null`.
+- For files, you must provide a valid `parentId`.
+
 ## Tech Stack
 
 **Backend:**
