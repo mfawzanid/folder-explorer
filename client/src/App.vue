@@ -1,6 +1,7 @@
 <template>
   <div class="app">
     <div class="left-panel">
+      <div v-if="rootItems.length === 0">No folders available</div>
       <FolderTree
         :items="rootItems"
         :open-items="openItems"
@@ -9,7 +10,9 @@
       />
     </div>
     <div class="right-panel">
-      <ul>
+      <div v-if="!selectedItem">Select a folder to view its contents</div>
+      <div v-else-if="(selectedItem.children ?? []).length === 0">No items in this folder</div>
+      <ul v-else>
         <li v-for="child in selectedItem?.children ?? []" :key="child.id">
           {{ child.type === 'folder' ? '📁' : '📄' }} {{ child.name }}
         </li>
